@@ -1,45 +1,81 @@
-from flask import Flask, render_template, request
+
+from flask import Flask, render_template
 from netmiko import ConnectHandler
+from pathlib import Path
+import os
 
 app = Flask(__name__)
 
-@app.route("/", methods=['GET', 'POST'])
+# Router configuration
+router_device = {
+    'device_type': 'cisco_ios_telnet',
+    'ip': os.getenv('ROUTER_IP', '192.168.10.122'),
+    'port': int(os.getenv('ROUTER_PORT', '32770')),
+    'username': os.getenv('ROUTER_USERNAME', 'admin'),
+    'password': os.getenv('ROUTER_PASSWORD', 'eve'),
+    'secret': os.getenv('ROUTER_SECRET', 'YOUR_ENABLE_SECRET'),
+}
+
+# Commands to execute
+command_to_run = [
+    'show version',
+    'show ip interface brief',
+    'show running-config'
+]
+
+
+@app.route('/')
 def index():
+
     result = {}
     error = None
 
-    if request.method == 'POST':
-        router_device = {
-            'device_type': 'cisco_ios_telnet',
-            'ip': '192.168.10.112',
-            'port': '32770',
-            'username': 'admin',
-            'password': 'eve123',
-            'secret': 'eve123',
-        }
+    try:
+        print("Connecting to the router...")
 
-        command_to_run = [
-            "show version",
-            "show ip interface brief",
-            "show running-config",
-        ]
+        net_connect = ConnectHandler(**router_device)
 
-        try:
-            net_connect = ConnectHandler(**router_device)
-            net_connect.enable()
+        net_connect.enable()
 
-            for cmd in command_to_run:
-                output = net_connect.send_command(cmd)
-                result[cmd] = output
+        for cmd in command_to_run:
 
-            net_connect.disconnect()
+            print(f"\nExecuting: {cmd}")
 
-        except Exception as e:
-            error = f"Connection failed: {e}"
+            output = net_connect.send_command(cmd)
 
-    return render_template('index.html', result=result, error=error)
+            result[cmd] = output
+
+        net_connect.disconnect()
+
+        print("Connection closed successfully.")
+
+    except Exception as e:
+        error = f"Connection failed: {e}"
+        print(error)
+
+    return render_template(
+        'index.html',
+        result=result,
+        error=error,
+        router=router_device
+    )
+
+
+@app.route('/view-code')
+def view_code():
+    html_file = Path(app.root_path) / 'templates' / 'index.html'
+
+    with open(html_file, 'r', encoding='utf-8') as file:
+        source_code = file.read()
+
+    return render_template(
+        'source.html',
+        source_code=source_code
+    )
 
 if __name__ == '__main__':
-    app.run(debug=True, host="0.0.0.0", port=5000)
-
-    
+    app.run(
+        debug=True,
+        host='127.0.0.1',
+        port=5000
+    )

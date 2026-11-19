@@ -1,0 +1,367 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Cisco Router Automation</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background: #0b1120;
+            color: #e2e8f0;
+        }
+
+        header {
+            background: #111c30;
+            padding: 22px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            border-bottom: 1px solid #263449;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+            color: #38bdf8;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .status {
+            background: #123c32;
+            color: #4ade80;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-size: 13px;
+        }
+
+        .code-btn {
+            background: #0284c7;
+            color: white;
+            padding: 10px 16px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .code-btn:hover {
+            background: #0369a1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 35px auto;
+            padding: 0 25px;
+        }
+
+        .welcome {
+            margin-bottom: 30px;
+        }
+
+        .welcome h1 {
+            font-size: 30px;
+            margin-bottom: 10px;
+        }
+
+        .welcome p {
+            color: #94a3b8;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns:
+                repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: #162238;
+            padding: 24px;
+            border-radius: 12px;
+            border: 1px solid #263449;
+        }
+
+        .card h3 {
+            color: #94a3b8;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .card h2 {
+            color: #38bdf8;
+            font-size: 22px;
+            overflow-wrap: anywhere;
+        }
+
+        .panel {
+            background: #162238;
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid #263449;
+            margin-bottom: 25px;
+        }
+
+        .panel h2 {
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+
+        .router-info {
+            display: grid;
+            grid-template-columns:
+                repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+        }
+
+        .info {
+            background: #0b1120;
+            padding: 17px;
+            border-radius: 8px;
+        }
+
+        .info span {
+            display: block;
+            color: #94a3b8;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .info strong {
+            color: #38bdf8;
+            overflow-wrap: anywhere;
+        }
+
+        .command {
+            background: #080e19;
+            border: 1px solid #263449;
+            border-radius: 8px;
+            margin-top: 15px;
+            overflow: hidden;
+        }
+
+        .command-header {
+            background: #1e293b;
+            padding: 12px 18px;
+            color: #38bdf8;
+            font-weight: bold;
+        }
+
+        pre {
+            padding: 18px;
+            color: #4ade80;
+            white-space: pre-wrap;
+            overflow-x: auto;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .error {
+            background: #451a1a;
+            border: 1px solid #ef4444;
+            color: #fca5a5;
+            padding: 18px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            overflow-wrap: anywhere;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            color: #64748b;
+            border-top: 1px solid #263449;
+            margin-top: 40px;
+        }
+
+        @media (max-width: 600px) {
+            header {
+                padding: 18px;
+            }
+
+            .welcome h1 {
+                font-size: 23px;
+            }
+
+            .header-right {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+
+    <div class="logo">
+        ⌘ NET AUTOMATION
+    </div>
+
+    <div class="header-right">
+
+        <div class="status">
+            ● Router Dashboard
+        </div>
+
+    
+
+    </div>
+
+</header>
+
+
+<div class="container">
+
+    <div class="welcome">
+
+        <h1>Cisco Router Dashboard</h1>
+
+        <p>
+            Network Monitoring and Automated Command Execution
+        </p>
+
+    </div>
+
+
+    <!-- Dashboard Cards -->
+
+    <div class="cards">
+
+        <div class="card">
+            <h3>DEVICE TYPE</h3>
+            <h2>Cisco IOS</h2>
+        </div>
+
+        <div class="card">
+            <h3>ROUTER IP</h3>
+            <h2>{{ router.ip }}</h2>
+        </div>
+
+        <div class="card">
+            <h3>CONNECTION</h3>
+            <h2>Netmiko</h2>
+        </div>
+
+        <div class="card">
+            <h3>PORT</h3>
+            <h2>{{ router.port }}</h2>
+        </div>
+
+    </div>
+
+
+    <!-- Router Information -->
+
+    <div class="panel">
+
+        <h2>Router Information</h2>
+
+        <div class="router-info">
+
+            <div class="info">
+                <span>Device Type</span>
+                <strong>Cisco IOS Telnet</strong>
+            </div>
+
+            <div class="info">
+                <span>IP Address</span>
+                <strong>{{ router.ip }}</strong>
+            </div>
+
+            <div class="info">
+                <span>Connection Port</span>
+                <strong>{{ router.port }}</strong>
+            </div>
+
+            <div class="info">
+                <span>Connection Library</span>
+                <strong>Netmiko</strong>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Connection Error -->
+
+    {% if error %}
+
+    <div class="error">
+
+        <strong>Connection Error:</strong>
+
+        <p>{{ error }}</p>
+
+    </div>
+
+    {% endif %}
+
+
+    <!-- Command Results -->
+
+    <div class="panel">
+
+        <h2>Command Execution Results</h2>
+
+        {% if result %}
+
+            {% for command, output in result.items() %}
+
+            <div class="command">
+
+                <div class="command-header">
+                    $ {{ command }}
+                </div>
+
+                <pre>{{ output }}</pre>
+
+            </div>
+
+            {% endfor %}
+
+        {% else %}
+
+            <p style="color: #94a3b8;">
+                No command results available.
+                Check your router connection.
+            </p>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+
+<footer>
+
+    Cisco Network Automation Dashboard
+
+    <br><br>
+
+    Powered by Python, Flask and Netmiko
+
+</footer>
+
+</body>
+</html>
